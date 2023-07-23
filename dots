@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+: "${DOTS_DUMMY:=no}"
+: "${DOTS_VERBOSE:=no}"
+
+Usage() {
+  read -d '' <<-EOF
+		Usage: dots <directory>
+	EOF
+  printf '%s' "$REPLY"
+  (( $1 > 0 )) && exit $1
+}
+
+Err() {
+  printf "Error: %s\n" "${2}" 1>&2
+  (( $1 > 0 )) && exit $1
+}
+
+RunCmd() {
+  local cmd="${1}"
+  if [[ $DOTS_VERBOSE == yes ]]; then
+    printf "%s\n" "$cmd"
+  fi
+  if [[ $DOTS_DUMMY == no ]]; then
+    $cmd
+  fi
+}
+
+ApplyDots() {
+  local dir="${1}"
+
+  for dots in $(find $dir -type f -name "dots.txt"); do
+    local basepath="$(realpath ${dots/dots.txt/})"
+    local dotspath="${basepath}/dots.txt"
+
+    while read; do
+      local link="${basepath}/${REPLY}"
+      local link_trg="${link%:*}"
+      local link_nam="${link#*:}"
+
+      # Replace ~ with full path.
+      link_nam="${link_nam/\~/$HOME}"
+
+      # Ensure containing directory exist.
+      local link_dir="${link_nam%/*}"
+      RunCmd "mkdir -p ${link_dir}"
+
+      # Backup existing files.
+      if [[ -e "${link_nam}" ]]; then
+        local mime="$(file --mime -b "${link_nam}" | cut -f1 -d';')"
+        if [[ "${mime}" != "inode/symlink" ]]; then
+          RunCmd "mv -f ${link_nam} ${link_nam}.bak"
+        fi
+      fi
+
+      # Create the link.
+      RunCmd "ln -sf -T ${link_trg} ${link_nam}"
+    done < "${dotspath}"
+  done
+}
+
+Main() {
+  local dir="${1}"
+
+  [[ -z $dir ]] && Usage 1
+  [[ -e $dir ]] || Err 1 "${dir} does not exist."
+  [[ -d $dir ]] || Err 1 "${dir} is not a directory."
+
+  ApplyDots "${directory}"
+}
+
+Main "${@}"
