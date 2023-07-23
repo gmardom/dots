@@ -1,0 +1,22 @@
+# Add my paths to PATH
+export PATH="${HOME}/.local/bin:${PATH}"
+
+# Xdg user directories
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_STATE_HOME="${HOME}/.local/state"
+export XDG_DATA_HOME="${HOME}/.local/share"
+
+# Zshells files
+export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
+
+# Keep ~ clean
+export _JAVA_OPTIONS="-Djava.util.prefs.userRoot=${XDG_CONFIG_HOME}/java"
+export XAUTHORITY="${XDG_RUNTIME_DIR}/Xauthority"
+
+# If on tty1, go straight to graphical session
+if [[ $(tty) == /dev/tty1 ]]; then
+  exec startx &>/dev/null
+fi
+
+# vim:ft=zsh:ts=2
