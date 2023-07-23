@@ -1,0 +1,2 @@
+mpd.conf:~/.config/mpd/mpd.conf
+ncmpcpp.conf:~/.config/ncmpcpp/config
