@@ -1,0 +1,10 @@
+[init]
+	defaultBranch = main
+[user]
+	email = dmarcinowski@zoho.com
+	name = Dominik Marcinowski
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f

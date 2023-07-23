@@ -1,0 +1,5 @@
+gitconfig:~/.config/git/config
+gtk3.ini:~/.config/gtk-3.0/settings.ini
+lf:~/.config/lf
+paru:~/.config/paru
+user-dirs.dirs:~/.config/user-dirs.dirs

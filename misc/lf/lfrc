@@ -1,0 +1,47 @@
+set globsearch
+set hidden
+set incsearch
+set drawbox
+set icons
+set mouse
+set scrolloff 3
+set tabstop 4
+set truncatechar "…"
+set previewer "~/.config/lf/preview.sh"
+
+# set shell zsh
+# set shellopts "-euy"
+set ifs "\n"
+set filesep "\n"
+
+cmd q :quit
+cmd create %create "$1"
+cmd open-with %"$@" "$fx"
+cmd wallpaper %setbg "$f"
+
+cmd yank-path ${{
+    printf '%s' "$fx" | xclip -sel clip
+    lf -remote "send unselect"
+}}
+
+cmd chmod %{{
+    chmod $1 $fx
+    lf -remote "send reload"
+    lf -remote "send unselect"
+}}
+
+map ` push :open-with<space>
+map a push :create<space>
+map c push :chmod<space>
+
+map C :clear
+map D :delete
+map W :wallpaper
+map Y :yank-path
+
+map . set hidden!
+map <f-5> reload
+map <m-up> up
+map <m-down> down
+
+%[ $LF_LEVEL -eq 1 ] || echo "Warning: You're in a nested lf instance!"
